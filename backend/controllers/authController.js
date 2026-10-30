@@ -80,7 +80,7 @@ const loginController = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: "Please fill the all fileds",
+      message: "Please fill the all fields",
     });
   }
 
@@ -90,6 +90,13 @@ const loginController = async (req, res) => {
       message: "Please enter a valid email",
     });
   }
+
+  if (!existingUser.isVerified) {
+  return res.status(403).json({
+    success: false,
+    message: "Please verify your email first",
+  });
+}
 
   let passCompare = bcrypt.compareSync(password, existingUser.password);
 
@@ -174,7 +181,7 @@ const resetPassword = async(req,res)=>{
   let decoded = jwt.verify(token,process.env.JWT_VERIFY_SECRET);
  
 if(decoded){
-  if(newPassword ===confirmPassword){
+  if(newPassword === confirmPassword){
     const hash = bcrypt.hashSync(newPassword, 10);
     await User.findByIdAndUpdate({_id:decoded._id},{password :hash})
   }else{
@@ -183,13 +190,18 @@ if(decoded){
       messsage : "Password not match"
     })
   }
+}else{
+  return res.status(400).json({
+    success : false,
+    message : "Invalid token"
+  })
 }
 return res.status(200).json({
   success : true,
-  messsage : "Password Update Done"
+  message : "Password Update Done"
 })
 
   
 
 }
-module.exports = { registrationController, loginController,verifyEmailController,forgotPassword,resetPassword };
+module.exports = { registrationController, loginController,verifyEmailController,forgotPassword,resetPassword};

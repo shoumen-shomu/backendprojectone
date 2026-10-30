@@ -37,8 +37,7 @@ coverage
 
 
 
-# Keep .env.example tracked if it acts as a template
-!.env.example
+
 
 # Build outputs and caches
 dist/
