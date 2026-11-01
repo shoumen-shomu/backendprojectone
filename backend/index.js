@@ -7,7 +7,7 @@ const authRouter = require('./routes/authRouter')
 const userRouter = require('./routes/userRouter')
 const adminRouter = require('./routes/adminRouter')
 const vendorRouter = require('./routes/vendorRouter')
-const {adminmiddleware,vendormiddleware} = require('./middleware/roleMiddleware')
+const {adminmiddleware,vendormiddleware, usermiddleware} = require('./middleware/roleMiddleware')
 
 
 

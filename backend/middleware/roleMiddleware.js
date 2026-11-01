@@ -37,14 +37,22 @@ let vendormiddleware = (req, res, next) => {
   
 
 };
+
 let usermiddleware = (req, res, next) => {
   let authorizationToken = req.headers.authorization;
+
+  if(!authorizationToken){
+    return res.status(401).json({
+      success: false,
+      message: "You are not Loggedin",
+    }); 
+  }
 
   let token = authorizationToken.split(" ")[1];
 
   let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
 
-  if (decoded) {
+  if (!decoded) {
     return res.status(401).json({
       success: false,
       message: "You are not Loggedin",

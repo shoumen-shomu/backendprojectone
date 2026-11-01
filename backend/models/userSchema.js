@@ -28,13 +28,9 @@ const userSchema = new Schema({
   status: {
     type: String,
     enum: ["active", "deactive"],
-    default: "active",
+    default: "deactive",
   },
-  status: {
-    type: String,
-    enum: ["active", "deactive"],
-    default: "active",
-  },
+
   isVerified: {
     type: Boolean,
     default: "false",
