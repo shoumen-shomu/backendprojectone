@@ -1,12 +1,11 @@
 const express = require('express');
-const { userController, updateProfile, createCategoty, getAllCategory } = require('../controllers/userController');
+const { userController, updateProfile } = require('../controllers/userController');
 const _ = express.Router();
 
 
-_.get('/product',userController)
+_.get('/alluser',userController)
 _.post('/update/:id',updateProfile)
-_.post("/create/category",createCategoty)
-_.get("/all/category",getAllCategory)
+
 
 
 

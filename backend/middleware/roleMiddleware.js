@@ -1,68 +1,48 @@
 const jwt = require("jsonwebtoken");
 
-let adminmiddleware = (req, res, next) => {
-  let authorizationToken = req.headers.authorization;
+const unauthorized = (res, message = "You are not Authorized") =>
+  res.status(401).json({ success: false, message });
 
-  let token = authorizationToken.split(" ")[1];
-
-  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
-
-  if (decoded.role != "admin") {
-    return res.status(401).json({
-      success: false,
-      message: "You are not Authorized",
-    });
-  } else {
-    next();
+const getDecodedToken = (req, res) => {
+  const authorization = req.headers.authorization;
+  if (typeof authorization !== "string") {
+    unauthorized(res, "You are not Loggedin");
+    return null;
   }
 
+  const [scheme, token] = authorization.split(" ");
+  if (scheme?.toLowerCase() !== "bearer" || !token) {
+    unauthorized(res, "You are not Loggedin");
+    return null;
+  }
+
+  try {
+    return jwt.verify(token, process.env.JWT_VERIFY_SECRET);
+  } catch {
+    unauthorized(res, "You are not Loggedin");
+    return null;
+  }
 };
 
-let vendormiddleware = (req, res, next) => {
-  let authorizationToken = req.headers.authorization;
-
-  let token = authorizationToken.split(" ")[1];
-
-  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
-
-  if (decoded.role != "vendor" && decoded.role != "admin") {
-    return res.status(401).json({
-      success: false,
-      message: "You are not Authorized",
-    }); 
-  } else{
-    next()
-  }
-
-  
-
+const adminmiddleware = (req, res, next) => {
+  const decoded = getDecodedToken(req, res);
+  if (!decoded) return;
+  if (decoded.role !== "admin") return unauthorized(res);
+  next();
 };
 
-let usermiddleware = (req, res, next) => {
-  let authorizationToken = req.headers.authorization;
-
-  if(!authorizationToken){
-    return res.status(401).json({
-      success: false,
-      message: "You are not Loggedin",
-    }); 
-  }
-
-  let token = authorizationToken.split(" ")[1];
-
-  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
-
-  if (!decoded) {
-    return res.status(401).json({
-      success: false,
-      message: "You are not Loggedin",
-    }); 
-  } else{
-    next()
-  }
-
-  
-
+const vendormiddleware = (req, res, next) => {
+  const decoded = getDecodedToken(req, res);
+  if (!decoded) return;
+  if (decoded.role !== "vendor" && decoded.role !== "admin") return unauthorized(res);
+  next();
 };
 
-module.exports = {adminmiddleware,vendormiddleware,usermiddleware};
+const usermiddleware = (req, res, next) => {
+  const decoded = getDecodedToken(req, res);
+  if (!decoded) return;
+  req.user = decoded;
+  next();
+};
+
+module.exports = { adminmiddleware, vendormiddleware, usermiddleware };

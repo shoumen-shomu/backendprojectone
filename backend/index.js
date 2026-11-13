@@ -17,7 +17,8 @@ mongodbConfig()
 app.use('/api/v1/auth',authRouter)
 app.use('/api/v1/user',usermiddleware,userRouter)
 app.use('/api/v1/admin',adminmiddleware,adminRouter)
-app.use('/api/v1/vendor',vendormiddleware,vendorRouter)
+// app.use('/api/v1/vendor',vendormiddleware,vendorRouter)
+app.use('/api/v1/vendor',vendorRouter)
 
 const port = process.env.PORT || 5000
 
