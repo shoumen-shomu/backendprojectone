@@ -68,7 +68,7 @@ const registrationController = async (req, res) => {
 
 const loginController = async (req, res) => {
   let { email, password } = req.body;
-  let existingUser = await User.findOne({ email: email });
+  let existingUser = await User.findOne({ email: email })
 
   if (!existingUser) {
     return res.status(400).json({
