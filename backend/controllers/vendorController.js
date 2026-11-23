@@ -27,7 +27,10 @@ let createCategoty = async (req, res) => {
 };
 
 let getAllCategory = async (req, res) => {
-  let category = await Cat.find({}).populate('owner');
+  let category = await Cat.find({}).populate({
+    path: "owner",
+    select: "-password",
+  });
 
   res.status(200).json({
     success: true,
@@ -52,6 +55,9 @@ let createSubCategory = async (req, res) => {
     name: name.toLowerCase(),
     parentCategory: parentCategory,
   });
+
+  // let catupdate = await Cat.findByIdAndUpdate({_id:parentCategory},
+  //   {$push :{subCategory:subcat._id}})
 
   await subcat.save();
 
@@ -82,19 +88,31 @@ let getAllCategoryWiseSubCategory = async (req, res) => {
   });
 };
 
-let getAllOwnerWiseCategory = async (req,res)=>{
-  let{id} = req.params
+let getAllOwnerWiseCategory = async (req, res) => {
+  let { id } = req.params;
 
-  let data = await Cat.find({owner : id})
+  let data = await Cat.find({ owner: id }).lean();
 
-  res.status(200).json({
-    success: true,
-    message: `${data.length} Categoty`,
-    data: data,
+  let myPromise = new Promise((resolve, reject) => {
+    let cat = [];
+    data.map(async (item) => {
+      let boom = await SubCat.find({ parentCategory: item._id });
+      cat.push({
+        ...item,
+        subcategory: boom,
+      });
+      resolve(cat);
+    });
   });
-}
 
-
+  myPromise.then((value) => {
+    res.status(200).json({
+      success: true,
+      message: `${data.length} Category`,
+      data: value,
+    });
+  });
+};
 
 module.exports = {
   createCategoty,
@@ -102,5 +120,5 @@ module.exports = {
   createSubCategory,
   getAllSubCategory,
   getAllCategoryWiseSubCategory,
-  getAllOwnerWiseCategory
+  getAllOwnerWiseCategory,
 };
