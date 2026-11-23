@@ -91,17 +91,25 @@ let getAllCategoryWiseSubCategory = async (req, res) => {
 let getAllOwnerWiseCategory = async (req, res) => {
   let { id } = req.params;
 
+  //Promise Start
+
   let data = await Cat.find({ owner: id }).lean();
 
-  let myPromise = new Promise((resolve, reject) => {
+  let myPromise = new Promise(function (resolve, reject) {
     let cat = [];
     data.map(async (item) => {
-      let boom = await SubCat.find({ parentCategory: item._id });
-      cat.push({
-        ...item,
-        subcategory: boom,
-      });
-      resolve(cat);
+      try {
+        let boom = await SubCat.find({ parentCategory: item._id });
+
+        cat.push({
+          ...item,
+          subcategory: boom,
+        });
+
+        if (data.length === cat.length) resolve(cat);
+      } catch (error) {
+        reject(error);
+      }
     });
   });
 
@@ -113,6 +121,8 @@ let getAllOwnerWiseCategory = async (req, res) => {
     });
   });
 };
+
+//Promise End
 
 module.exports = {
   createCategoty,
