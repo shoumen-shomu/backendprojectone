@@ -62,9 +62,9 @@ let productSchema = new Schema({
     enum: ["approved", "rejected", "pending"],
     default: "pending",
   },
-  brand :{
-    type : String
-  },
+  // brand :{
+  //   type : String
+  // },
   category :{
     type : Schema.Types.ObjectId,
     ref : 'Category'
