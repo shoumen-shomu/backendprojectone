@@ -69,6 +69,9 @@ let createProduct = async (req, res) => {
       message: "Product Created",
       product : product
   })
+
+
+  
 };
 
 module.exports = { createProduct };
