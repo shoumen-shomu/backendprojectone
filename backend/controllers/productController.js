@@ -9,24 +9,39 @@ let createProduct = async (req, res) => {
     discountPrice,
     category,
     subCategory,
+    isMain
    
   } = req.body;
 
-  //   if (
-  //     !title ||
-  //     !description ||
-  //     !shortDescription ||
-  //     !brand ||
-  //     !price ||
-  //     !discountPrice ||
-  //     !category ||
-  //     !subCategory
-  //   ) {
-  //     req.status(400).json({
-  //       success: false,
-  //       message: "Please fill all the fields",
-  //     });
-  //   }
+  
+  
+
+
+  let images = []
+  req.files.map((item,index)=>{
+   images.push({
+    url :item.path,
+    isMain : index == isMain ? true : false
+   })
+  })
+  
+console.log(images);
+
+    // if (
+    //   !title ||
+    //   !description ||
+    //   !shortDescription ||
+    //   !brand ||
+    //   !price ||
+    //   !discountPrice ||
+    //   !category ||
+    //   !subCategory
+    // ) {
+    //   req.status(400).json({
+    //     success: false,
+    //     message: "Please fill all the fields",
+    //   });
+    // }
 
   let slug = title.toLowerCase().split(" ").join("-");
 
@@ -59,7 +74,8 @@ let createProduct = async (req, res) => {
     category: category,
     subCategory: subCategory,
     slug : slug,
-    sku : sku
+    sku : sku,
+    images : images
   });
 
  await product.save()

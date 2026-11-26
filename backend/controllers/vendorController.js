@@ -1,7 +1,7 @@
 let Cat = require("../models/categorySchema");
 let SubCat = require("../models/subCategorySchema");
 
-let createCategoty = async (req, res) => {
+let createCategory = async (req, res) => {
   let { name, owner } = req.body;
 
   let existingnName = await Cat.findOne({ name: name.toLowerCase() });
@@ -125,7 +125,7 @@ let getAllOwnerWiseCategory = async (req, res) => {
 //Promise End
 
 module.exports = {
-  createCategoty,
+  createCategory,
   getAllCategory,
   createSubCategory,
   getAllSubCategory,
