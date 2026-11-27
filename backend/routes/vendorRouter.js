@@ -8,7 +8,7 @@ const {
   getAllOwnerWiseCategory,
   createCategory,
 } = require("../controllers/vendorController");
-const { createProduct } = require("../controllers/productController");
+const { createProduct, getAllProduct } = require("../controllers/productController");
 const multer = require("multer");
 const _ = express.Router();
 
@@ -36,5 +36,6 @@ _.get("/user/:id/category", getAllOwnerWiseCategory);
 
 //product
 _.post("/create/product",upload.array('photo'),createProduct);
+_.get("/all/product",getAllProduct);
 
 module.exports = _;

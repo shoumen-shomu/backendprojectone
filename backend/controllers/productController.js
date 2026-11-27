@@ -9,39 +9,35 @@ let createProduct = async (req, res) => {
     discountPrice,
     category,
     subCategory,
-    isMain
-   
+    isMain,
+    owner,
   } = req.body;
 
-  
-  
+  let images = [];
+  req.files.map((item, index) => {
+    images.push({
+      url: item.path,
+      isMain: index == isMain ? true : false,
+    });
+  });
 
+  console.log(images);
 
-  let images = []
-  req.files.map((item,index)=>{
-   images.push({
-    url :item.path,
-    isMain : index == isMain ? true : false
-   })
-  })
-  
-console.log(images);
-
-    // if (
-    //   !title ||
-    //   !description ||
-    //   !shortDescription ||
-    //   !brand ||
-    //   !price ||
-    //   !discountPrice ||
-    //   !category ||
-    //   !subCategory
-    // ) {
-    //   req.status(400).json({
-    //     success: false,
-    //     message: "Please fill all the fields",
-    //   });
-    // }
+  // if (
+  //   !title ||
+  //   !description ||
+  //   !shortDescription ||
+  //   !brand ||
+  //   !price ||
+  //   !discountPrice ||
+  //   !category ||
+  //   !subCategory
+  // ) {
+  //   req.status(400).json({
+  //     success: false,
+  //     message: "Please fill all the fields",
+  //   });
+  // }
 
   let slug = title.toLowerCase().split(" ").join("-");
 
@@ -73,21 +69,33 @@ console.log(images);
     discountPrice: discountPrice,
     category: category,
     subCategory: subCategory,
-    slug : slug,
-    sku : sku,
-    images : images
+    slug: slug,
+    sku: sku,
+    images: images,
+    owner : owner
   });
 
- await product.save()
+  await product.save();
 
   return res.status(201).json({
     success: true,
-      message: "Product Created",
-      product : product
-  })
-
-
-  
+    message: "Product Created",
+    product: product,
+  });
 };
 
-module.exports = { createProduct };
+let getAllProduct = async (req,res)=>{
+
+  let product = await Product.find({}).populate(['category','subCategory','owner'])
+
+
+  res.status(200).json({
+    success : true,
+    message : "All product",
+    product : product
+
+  })
+  
+}
+
+module.exports = { createProduct,getAllProduct };
